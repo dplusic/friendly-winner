@@ -6,11 +6,11 @@ import * as View from "./Coordinates/View";
 import * as Point from "./Coordinates/Point";
 
 export const putUser = (
-  { userId }: { userId: string }
+  { userId, userName }: { userId: string, userName: string }
 ) => {
   const user: UserModel.User = {
     id: userId,
-    name: userId,
+    name: userName,
     position: Point.origin
   };
 

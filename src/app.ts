@@ -8,7 +8,7 @@ const promiseToResponse = (res: express.Response) => <T>(promise: Promise<T>) =>
         res.send(e);
     })
 
-const getUserFromReq = (req: express.Request) => ({ userId: req.query.userId });
+const getUserFromReq = (req: express.Request) => ({ userId: req.connection.remoteAddress! });
 
 const cb1 = <D>(cb: (user: { userId: string }, req: express.Request) => Promise<D>) => (req: express.Request, res: express.Response) => {
     const user = getUserFromReq(req);
@@ -20,7 +20,14 @@ const app = express();
 
 app.use(express.json());
 
-app.put('/user', cb1(handler.putUser));
+app.put('/user', cb1(({ userId }, req) => {
+    const { name: userName } = req.body;
+    if (userName == null) {
+        return Promise.reject('No name');
+    }
+
+    return handler.putUser({ userId, userName });
+}));
 
 app.get('/map', cb1(handler.getMap));
 
