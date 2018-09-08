@@ -31,4 +31,10 @@ app.put('/user', cb1(({ userId }, req) => {
 
 app.get('/map', cb1(handler.getMap));
 
+app.post('/move', cb1((user, req) => {
+    const { direction } = req.body;
+
+    return handler.move(user, direction);
+}));
+
 app.listen(3000);

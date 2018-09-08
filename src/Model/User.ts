@@ -4,4 +4,5 @@ export type User = {
   id: string;
   name: string;
   position: Point.Point;
+  actionStates: { [key: string]: any };
 };
