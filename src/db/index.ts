@@ -20,6 +20,10 @@ export type DB = {
   batchGet: <D>(
     { table, queries }: { table: string; queries: object[] }
   ) => Promise<D[]>;
+
+  getAll: <D>(
+    { table }: { table: string; }
+  ) => Promise<D[]>;
 };
 
 export const connect: () => DB = mem.connect;

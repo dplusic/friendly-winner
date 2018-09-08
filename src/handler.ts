@@ -49,3 +49,13 @@ export const move = (
     })
       .then(() => user.position))
 };
+
+export const getUsers = () => {
+  const db = connectDb();
+
+  return db.getAll<UserModel.User>({ table: "user" })
+    .then(users => users.map(user => ({
+      id: user.name,
+      position: user.position,
+    })))
+};

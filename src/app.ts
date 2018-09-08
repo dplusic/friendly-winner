@@ -16,6 +16,11 @@ const cb1 = <D>(cb: (user: { userId: string }, req: express.Request) => Promise<
     promiseToResponse(res)(handlePromise);
 }
 
+const cb2 = <D>(cb: () => Promise<D>) => (req: express.Request, res: express.Response) => {
+    const handlePromise = cb();
+    promiseToResponse(res)(handlePromise);
+}
+
 const app = express();
 
 app.use(express.json());
@@ -36,5 +41,7 @@ app.post('/move', cb1((user, req) => {
 
     return handler.move(user, direction);
 }));
+
+app.get('/users', cb2(handler.getUsers));
 
 app.listen(3000);

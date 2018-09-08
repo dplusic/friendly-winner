@@ -42,6 +42,13 @@ export const connect = () => {
         table: string;
         queries: object[];
       }): Promise<D[]> =>
-      Promise.resolve(queries.map((query: any) => db[table][query.id]).filter(x => x !== undefined))
+      Promise.resolve(queries.map((query: any) => db[table][query.id]).filter(x => x !== undefined)),
+
+    getAll: <D>({
+      table
+    }: {
+        table: string;
+      }): Promise<D[]> =>
+      Promise.resolve(Object.values(db[table])),
   };
 };
