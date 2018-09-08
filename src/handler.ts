@@ -21,8 +21,7 @@ export const putUser = (
     .put({
       table: "user",
       data: user
-    })
-    .then(() => user)
+    });
 };
 
 export const getMap = (
