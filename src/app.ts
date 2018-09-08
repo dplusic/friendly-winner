@@ -8,15 +8,21 @@ const promiseToResponse = (res: express.Response) => <T>(promise: Promise<T>) =>
         res.send(e);
     })
 
-const getUserFromReq = (req: express.Request) => ({ userId: req.connection.remoteAddress! });
+const getUserFromReq = (req: express.Request) => ({ userId: req.query.userId });
 
-const cb1 = <D>(cb: (user: { userId: string }, req: express.Request) => Promise<D>) => (req: express.Request, res: express.Response) => {
+const cbWithUser = <D>(cb: (user: { userId: string }, req: express.Request) => Promise<D>) => (req: express.Request, res: express.Response) => {
     const user = getUserFromReq(req);
+    if (user.userId == null) {
+        res.status(401);
+        res.send('No user id');
+        return;
+    }
+
     const handlePromise = cb(user, req);
     promiseToResponse(res)(handlePromise);
 }
 
-const cb2 = <D>(cb: () => Promise<D>) => (req: express.Request, res: express.Response) => {
+const cbAsAdmin = <D>(cb: () => Promise<D>) => (req: express.Request, res: express.Response) => {
     const handlePromise = cb();
     promiseToResponse(res)(handlePromise);
 }
@@ -25,7 +31,7 @@ const app = express();
 
 app.use(express.json());
 
-app.put('/user', cb1(({ userId }, req) => {
+app.put('/user', cbWithUser(({ userId }, req) => {
     const { name: userName } = req.body;
     if (userName == null) {
         return Promise.reject('No name');
@@ -34,14 +40,14 @@ app.put('/user', cb1(({ userId }, req) => {
     return handler.putUser({ userId, userName });
 }));
 
-app.get('/map', cb1(handler.getMap));
+app.get('/map', cbWithUser(handler.getMap));
 
-app.post('/move', cb1((user, req) => {
+app.post('/move', cbWithUser((user, req) => {
     const { direction } = req.body;
 
     return handler.move(user, direction);
 }));
 
-app.get('/users', cb2(handler.getUsers));
+app.get('/users', cbAsAdmin(handler.getUsers));
 
 app.listen(3000);
