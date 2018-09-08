@@ -1,3 +1,6 @@
+import * as util from 'util';
+import * as debug from 'debug';
+
 const db: { [key: string]: any } = {
   user: {
 
@@ -19,7 +22,7 @@ export const connect = () => {
         ifValueNotExists?: string;
       }) => {
       db[table][(<any>data).id] = data;
-      console.log('put', db);
+      debug('friendly-winner:db')(util.inspect(db, { depth: null }));
       return Promise.resolve();
     },
 
