@@ -1,4 +1,5 @@
 import { connect as connectDb } from "./db";
+import * as UserIO from "./IO/User";
 import * as MapIO from "./IO/Map";
 import * as UserModel from "./Model/User";
 import * as Section from "./Coordinates/Section";
@@ -27,13 +28,7 @@ export const getMap = (
 ) => {
   const db = connectDb();
 
-  return db.get<UserModel.User>({
-    table: "user",
-    query: {
-      id: userId
-    }
-  })
-    .then(user => (user ? Promise.resolve(user) : Promise.reject("No User")))
+  return UserIO.getUser(db)(userId)
     .then(user => Section.intersectedSections(View.fromPoint(user.position)))
     .then(MapIO.getMap(db))
 };
