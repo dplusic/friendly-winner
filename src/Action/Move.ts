@@ -3,7 +3,7 @@ import * as UserModel from '../Model/User';
 
 const STATE_KEY = 'move'
 
-const COOLTIME = 500;
+const COOLTIME = 100;
 
 const DIRECTION_POINTS: { [key: string]: Point.Point } = {
     up: Point.fromNumber(0, 1),
