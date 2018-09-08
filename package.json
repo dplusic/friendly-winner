@@ -11,12 +11,14 @@
   "dependencies": {
     "debug": "^3.1.0",
     "express": "^4.16.3",
+    "got": "^9.2.1",
     "ramda": "^0.25.0",
     "ts-enum-util": "^3.1.0"
   },
   "devDependencies": {
     "@types/debug": "0.0.30",
     "@types/express": "^4.16.0",
+    "@types/got": "^8.3.3",
     "@types/jest": "^23.3.1",
     "@types/node": "^8.0.57",
     "@types/ramda": "^0.25.36",

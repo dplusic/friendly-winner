@@ -1,3 +1,4 @@
+import * as got from 'got';
 import { connect as connectDb } from "./db";
 import * as UserIO from "./IO/User";
 import * as MapIO from "./IO/Map";
@@ -52,9 +53,18 @@ export const move = (
 export const getUsers = () => {
   const db = connectDb();
 
-  return db.getAll<UserModel.User>({ table: "user" })
+  const fwUsersPromise = db.getAll<UserModel.User>({ table: "user" })
     .then(users => users.map(user => ({
       id: user.name,
       position: user.position,
     })))
+
+  const airplaneUsersPromise = got('http://ec2-13-125-216-146.ap-northeast-2.compute.amazonaws.com:19856/playerList', { json: true });
+  setTimeout(() => airplaneUsersPromise.cancel(), 500);
+
+  return Promise.all([fwUsersPromise, airplaneUsersPromise])
+    .then(([fwUsers, airplaneUsers]) => ({
+      users: fwUsers,
+      inTheAirplain: airplaneUsers.body.playerList,
+    }));
 };
